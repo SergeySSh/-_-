@@ -11,8 +11,8 @@ dp = Dispatcher(bot)
 id_users = []
 users_id = {}
 
-report_now = ['d', str(datetime.datetime.today().date()), 'day', 'день', 'сегодня', 'now', 'today']
-report_month = ['m', str(datetime.datetime.today().date())[:7], 'month', 'месяц', 'за месяц']
+report_now = ['d', 'day', 'день', 'сегодня', 'now', 'today']
+report_month = ['m', 'month', 'месяц', 'за месяц']
 report_year = ['Y', str(datetime.datetime.today().date())[:4], 'год', 'итог', 'итого', 'всего', 'all', 'year', 'за год',
                'сумма', 'все']
 report_list = report_year + report_month + report_now
@@ -53,15 +53,15 @@ def phrase(val='сегодня'):
 
 
 async def get_data_month_or_day(message: types.Message, symbol: list):
-    report, summa = DataBase().get_data(message.from_user.first_name, symbol[1])
+    report, summa = DataBase().get_data(message.from_user.first_name, symbol[0])
     if report:
-        if symbol[2] == 'day':
+        if symbol[1] == 'day':
             await bot.send_message(message.chat.id, "<i>За {} вы потратили:</i>\n{}\n{}\n{}\nИтого: {} руб."
-                                   .format(symbol[1], "-" * 30, report, "-" * 30, summa), parse_mode='html')
+                                   .format(symbol[0], "-" * 30, report, "-" * 30, summa), parse_mode='html')
         else:
             await bot.send_message(message.chat.id,
                                    "<i>За {} месяц {} года вы потратили:</i>\n{}\n{}\n{}\nИтого: {} руб."
-                                   .format(dict_name_month[int(symbol[1][5:])], symbol[1][:4], "-" * 30, report,
+                                   .format(dict_name_month[int(symbol[0][5:])], symbol[0][:4], "-" * 30, report,
                                            "-" * 30, summa),
                                    parse_mode='html')
     else:
@@ -91,10 +91,10 @@ async def start(message: types.Message):
 @dp.message_handler(lambda message: any(word in message.text.lower() for word in report_list))
 async def send_report(message: types.Message):
     if message.text.lower() in report_now:
-        await get_data_month_or_day(message, report_now)
+        await get_data_month_or_day(message, [message.date.date(), 'day'])
 
     elif message.text.lower() in report_month:
-        await get_data_month_or_day(message, report_month)
+        await get_data_month_or_day(message, [str(message.date.date())[:7], 'month'])
 
     elif message.text.lower() in report_year:
         dict_data_all = []
@@ -152,7 +152,7 @@ async def callback_query_del_all_data(callback: types.CallbackQuery):
         await bot.send_message(callback.message.chat.id, f'{callback.from_user.first_name} ХВАТИТ опять '
                                                          f'ТЫКАТЬ НА КНОПКИ УЖЕ ФсЁ...')
         await bot.send_document(callback.message.chat.id,
-                                document=open('/home/sssh/PycharmProjects/TelegrammBot/'
+                                document=open('C:\\Program Files\\py3eg\\TelegrammBot\\'
                                               'AcceptableFlamboyantAssassinbug-size_restricted.gif', 'rb'))
         await bot.edit_message_reply_markup(chat_id=callback.from_user.id,
                                             message_id=callback.message.message_id,

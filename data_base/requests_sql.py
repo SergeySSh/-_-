@@ -3,7 +3,7 @@ import sqlite3
 
 
 class DataBase:
-    base = sqlite3.connect('C:\\Program Files\\py3eg\\TelegrammBot\\data_base\\telegram.db')
+    base = sqlite3.connect('data_base/telegram.db')
     cur = base.cursor()
 
     def start_data(self, name_id):
