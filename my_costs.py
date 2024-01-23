@@ -1,9 +1,10 @@
-from aiogram import Bot, Dispatcher, executor, types, filters
-from data_base.requests_sql import DataBase
 import datetime
 import os
 import emoji
+from aiogram import Bot, Dispatcher, executor, types, filters
 from dotenv import load_dotenv, find_dotenv
+from data_base.requests_sql import DataBase
+
 
 load_dotenv(find_dotenv())
 bot = Bot(os.getenv('TOKEN'))
@@ -16,20 +17,11 @@ report_month = ['m', 'month', 'месяц', 'за месяц']
 report_year = ['Y', str(datetime.datetime.today().date())[:4], 'год', 'итог', 'итого', 'всего', 'all', 'year', 'за год',
                'сумма', 'все']
 report_list = report_year + report_month + report_now
+
 dict_name_month = {
-    1: 'Январь',
-    2: 'Февраль',
-    3: 'Март',
-    4: 'Апрель',
-    5: 'Май',
-    6: 'Июнь',
-    7: 'Июль',
-    8: 'Август',
-    9: 'Сентябрь',
-    10: 'Октябрь',
-    11: 'Ноябрь',
-    12: 'Декабрь'
-}
+    1: 'Январь', 2: 'Февраль', 3: 'Март', 4: 'Апрель', 5: 'Май', 6: 'Июнь', 7: 'Июль', 8: 'Август',
+    9: 'Сентябрь', 10: 'Октябрь', 11: 'Ноябрь', 12: 'Декабрь'
+    }
 
 kl = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=4)
 button_ = types.KeyboardButton(text='Сегодня')
@@ -37,7 +29,6 @@ button_1 = types.KeyboardButton(text='Месяц')
 button_2 = types.KeyboardButton(text='Год')
 button_3 = types.KeyboardButton(text=emoji.emojize(':pirate_flag:'))
 button_4 = types.KeyboardButton(text='Удалить последнюю запись')
-
 kl.add(button_, button_1, button_2, button_3, button_4)
 
 inl_1 = types.InlineKeyboardButton('Да', callback_data='Yes')
@@ -82,6 +73,13 @@ async def start(message: types.Message):
                            f'Ты сам выбираешь статьи своих расходов, и чтобы было проще считать, используй одинаковые '
                            f'категории: вместо "хлеб 500" или "молоко 100" - вноси: "продукты 500" и "продукты 100" '
                            f'соответственно... ну если только тебе не нужна подробнейшая статистика!!!'
+                           f'\n'
+                           f'Для просмотра отчета, ты можешь нажимать на кнопки либо: '
+                           f'написать любое слово из списка:'
+                           f'"d, day, день, сегодня, now, today", чтобы получить отчет за сегодняшний день;'
+                           f'либо: "m, month, месяц, за месяц", чтобы получить отчет за месяц;'
+                           f'либо: "Y, год, итог, итого, всего, all, year, за год, сумма, все", '
+                           f'чтобы получить отчет за год;'
                            f'\n\n'
                            f'{"*" * 40}'
                            f'{emoji.emojize(":pirate_flag:")} - УДАЛЯЕТ ВСЕ ЗАПИСИ, БУДЬ ВНИМАТЕЛЬНЕЕ!!!',
@@ -142,7 +140,6 @@ async def callback_query_del_all_data(callback: types.CallbackQuery):
             await bot.send_message(callback.message.chat.id,
                                    text=f'<em>ВСЕ ЗАПИСИ УДАЛЕНЫ!</em>\n{"*" * 30}', parse_mode='html')
             await callback.answer()
-
         else:
             await bot.send_message(callback.message.chat.id,
                                    text=f'<em>И правильно...удалим когда не сможем '
@@ -152,8 +149,7 @@ async def callback_query_del_all_data(callback: types.CallbackQuery):
         await bot.send_message(callback.message.chat.id, f'{callback.from_user.first_name} ХВАТИТ опять '
                                                          f'ТЫКАТЬ НА КНОПКИ УЖЕ ФсЁ...')
         await bot.send_document(callback.message.chat.id,
-                                document=open('C:\\Program Files\\py3eg\\TelegrammBot\\'
-                                              'AcceptableFlamboyantAssassinbug-size_restricted.gif', 'rb'))
+                                document=open('AcceptableFlamboyantAssassinbug-size_restricted.gif', 'rb'))
         await bot.edit_message_reply_markup(chat_id=callback.from_user.id,
                                             message_id=callback.message.message_id,
                                             reply_markup=None)
